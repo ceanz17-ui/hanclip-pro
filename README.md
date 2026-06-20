@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HanClip Pro • AI Viral Clip Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .hero-bg { background: linear-gradient(135deg, #0a0a0a, #1a0033, #000000); }
+    .glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(20px); }
+    .gradient-text { background: linear-gradient(90deg, #a855f7, #ec4899, #f43f5e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .scanline { position: relative; }
+    .scanline::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(transparent, rgba(168, 85, 247, 0.15), transparent);
+      animation: scan 4s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(400%); } }
+    .btn-glow { box-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+    .btn-glow:hover { box-shadow: 0 0 30px rgba(168, 85, 247, 0.8); }
+  </style>
+</head>
+<body class="bg-black text-white overflow-x-hidden">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full z-50 glass border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <span class="text-4xl">🎬</span>
+        <h1 class="text-3xl font-bold tracking-tight">HanClip <span class="gradient-text">Pro</span></h1>
+      </div>
+      <div class="flex items-center gap-8 text-sm">
+        <a href="#features" class="hover:text-purple-400 transition">Fitur</a>
+        <a href="#howit" class="hover:text-purple-400 transition">Cara Kerja</a>
+        <a href="#pricing" class="hover:text-purple-400 transition">Paket</a>
+        <div class="flex items-center gap-2 bg-green-500/10 text-green-400 px-4 py-2 rounded-2xl text-xs font-medium">
+          <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+          UNLIMITED (ceanz code)
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-bg min-h-screen pt-32 flex items-center relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-8 grid md:grid-cols-2 gap-12 items-center w-full">
+      <div class="space-y-8">
+        <div class="inline-flex items-center gap-2 bg-white/10 px-6 py-2 rounded-full text-sm">
+          <span class="text-purple-400">✦</span> AI lebih pintar dari Opus Clip
+        </div>
+        <h1 class="text-7xl font-bold leading-tight">Ubah 1 video<br>menjadi <span class="gradient-text">puluhan viral clips</span> dalam detik</h1>
+        <p class="text-2xl text-gray-300">Analisis emosi • Deteksi hook • Prediksi viral score • Siap CapCut</p>
+        
+        <div class="glass border border-white/20 rounded-3xl p-8">
+          <input id="videoUrl" type="text" 
+                 class="w-full bg-black/60 border border-white/30 focus:border-purple-500 rounded-2xl px-6 py-5 text-lg outline-none transition"
+                 placeholder="Paste link YouTube, TikTok, atau Instagram...">
+          <button onclick="startAnalysis()" 
+                  class="mt-6 w-full bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 hover:brightness-110 py-6 rounded-2xl font-bold text-xl flex items-center justify-center gap-3 transition-all active:scale-95 btn-glow">
+            <i class="fas fa-bolt"></i>
+            ANALISIS DENGAN AI SUPER
+          </button>
+        </div>
+      </div>
+
+      <div class="relative hidden md:block">
+        <div class="glass rounded-3xl p-6 shadow-2xl border border-purple-500/30 scanline">
+          <img src="https://picsum.photos/id/1015/800/500" alt="Video Preview" class="rounded-2xl w-full h-auto">
+          <div class="absolute bottom-8 left-8 right-8 bg-black/70 backdrop-blur p-4 rounded-2xl">
+            <div class="flex justify-between text-sm">
+              <div>Viral Score: <span class="text-emerald-400 font-bold">94%</span></div>
+              <div>3 Clips Detected</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Analysis Demo Section -->
+  <section id="analysisSection" class="hidden py-20 bg-zinc-950">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold mb-3">AI Analysis in Progress...</h2>
+        <div class="w-96 h-2 bg-zinc-800 rounded-full mx-auto overflow-hidden">
+          <div id="progressBar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 w-0 transition-all duration-300"></div>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-12 gap-8" id="resultContent">
+        <!-- Filled by JavaScript -->
+      </div>
+
+      <button onclick="resetAnalysis()" class="mt-12 mx-auto block bg-white/10 hover:bg-white/20 px-8 py-3 rounded-2xl transition">
+        ← Analisis Video Lain
+      </button>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-24 bg-zinc-950">
+    <div class="max-w-7xl mx-auto px-8">
+      <h2 class="text-5xl font-bold text-center mb-16">Kenapa HanClip Pro Lebih Unggul</h2>
+      <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+        <div>
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr class="border-b border-white/20">
+                <th class="py-4"></th>
+                <th class="py-4 text-center text-purple-400">HanClip Pro</th>
+                <th class="py-4 text-center opacity-50">Opus Clip</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-white/10"><td class="py-5">Viral Score Prediction</td><td class="text-center text-emerald-400">✅ Real-time AI</td><td class="text-center">❌ Basic</td></tr>
+              <tr class="border-b border-white/10"><td class="py-5">Emotion & Hook Detection</td><td class="text-center text-emerald-400">✅ Advanced</td><td class="text-center">❌ Limited</td></tr>
+              <tr class="border-b border-white/10"><td class="py-5">CapCut Auto-Edit Script</td><td class="text-center text-emerald-400">✅ Detailed</td><td class="text-center">❌ Basic</td></tr>
+              <tr class="border-b border-white/10"><td class="py-5">Unlimited Analysis</td><td class="text-center text-emerald-400">✅ ceanz code</td><td class="text-center">❌ Quota</td></tr>
+              <tr><td class="py-5">Watermark-Free Export</td><td class="text-center text-emerald-400">✅ HD</td><td class="text-center">❌ Watermarked</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="space-y-6">
+          <div class="glass p-8 rounded-3xl border border-purple-500/20 hover:border-purple-500/50 transition">
+            <h4 class="text-xl font-semibold mb-4 text-purple-300">🎯 Fitur Eksklusif</h4>
+            <ul class="space-y-4 text-gray-300 text-sm">
+              <li class="flex gap-3"><span class="text-purple-400">→</span> Prediksi retention per detik</li>
+              <li class="flex gap-3"><span class="text-purple-400">→</span> Saran trending audio otomatis</li>
+              <li class="flex gap-3"><span class="text-purple-400">→</span> Multi-platform optimization</li>
+              <li class="flex gap-3"><span class="text-purple-400">→</span> A/B testing suggestion</li>
+              <li class="flex gap-3"><span class="text-purple-400">→</span> Real-time collaboration</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Cards -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="glass p-8 rounded-2xl border border-white/10 hover:border-purple-500/50 transition group">
+          <i class="fas fa-brain text-4xl text-purple-400 mb-4"></i>
+          <h3 class="text-xl font-semibold mb-3 group-hover:text-purple-300 transition">Advanced AI Detection</h3>
+          <p class="text-gray-400 text-sm">Teknologi machine learning terdepan untuk menganalisis setiap frame video Anda dengan presisi tinggi.</p>
+        </div>
+        <div class="glass p-8 rounded-2xl border border-white/10 hover:border-pink-500/50 transition group">
+          <i class="fas fa-bolt text-4xl text-pink-400 mb-4"></i>
+          <h3 class="text-xl font-semibold mb-3 group-hover:text-pink-300 transition">Lightning Fast</h3>
+          <p class="text-gray-400 text-sm">Analisis video 18 menit selesai dalam hitungan detik. Kecepatan yang belum pernah ada sebelumnya.</p>
+        </div>
+        <div class="glass p-8 rounded-2xl border border-white/10 hover:border-rose-500/50 transition group">
+          <i class="fas fa-download text-4xl text-rose-400 mb-4"></i>
+          <h3 class="text-xl font-semibold mb-3 group-hover:text-rose-300 transition">Export Ready</h3>
+          <p class="text-gray-400 text-sm">Langsung siap untuk CapCut dengan timing, efek, dan saran musik yang sempurna.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="howit" class="py-24 bg-black/50">
+    <div class="max-w-7xl mx-auto px-8">
+      <h2 class="text-5xl font-bold text-center mb-16">Cara Kerjanya</h2>
+      <div class="grid md:grid-cols-4 gap-6">
+        <div class="text-center">
+          <div class="w-20 h-20 bg-gradient-to-br from-purple-600 to-purple-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">1</div>
+          <h3 class="text-xl font-semibold mb-3">Paste Link Video</h3>
+          <p class="text-gray-400 text-sm">Tempel link dari YouTube, TikTok, atau Instagram ke dalam form.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-20 h-20 bg-gradient-to-br from-pink-600 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">2</div>
+          <h3 class="text-xl font-semibold mb-3">AI Analyze</h3>
+          <p class="text-gray-400 text-sm">AI kami menganalisis emosi, hook, dan momentum viral dalam video.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-20 h-20 bg-gradient-to-br from-rose-600 to-rose-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">3</div>
+          <h3 class="text-xl font-semibold mb-3">Get Results</h3>
+          <p class="text-gray-400 text-sm">Dapatkan hasil dengan viral score dan segment-segment terbaik.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-20 h-20 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">4</div>
+          <h3 class="text-xl font-semibold mb-3">Export & Share</h3>
+          <p class="text-gray-400 text-sm">Export tanpa watermark dan langsung share ke semua platform.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="py-24 bg-zinc-950">
+    <div class="max-w-7xl mx-auto px-8">
+      <h2 class="text-5xl font-bold text-center mb-16">Pilih Paket Anda</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="glass border border-white/20 rounded-3xl p-8 hover:border-white/40 transition">
+          <h3 class="text-2xl font-bold mb-2">Starter</h3>
+          <p class="text-gray-400 mb-6">Untuk pemula</p>
+          <div class="text-4xl font-bold mb-6">Rp 49K<span class="text-lg text-gray-400">/bulan</span></div>
+          <ul class="space-y-3 mb-8 text-sm">
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 10 Analisis/bulan</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> HD Export</li>
+            <li class="flex gap-2"><span class="text-gray-600">✗</span> Watermark</li>
+            <li class="flex gap-2"><span class="text-gray-600">✗</span> Priority Support</li>
+          </ul>
+          <button class="w-full border border-white/30 hover:bg-white/10 py-3 rounded-2xl transition">Pilih Paket</button>
+        </div>
+
+        <div class="glass border-2 border-purple-500 rounded-3xl p-8 relative overflow-hidden">
+          <div class="absolute top-0 right-0 bg-purple-600 text-white px-4 py-1 text-xs font-bold rounded-bl-xl">POPULAR</div>
+          <h3 class="text-2xl font-bold mb-2">Pro</h3>
+          <p class="text-gray-400 mb-6">Untuk content creator aktif</p>
+          <div class="text-4xl font-bold mb-6">Rp 199K<span class="text-lg text-gray-400">/bulan</span></div>
+          <ul class="space-y-3 mb-8 text-sm">
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 100 Analisis/bulan</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 4K Export</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> Watermark-Free</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> Email Support</li>
+          </ul>
+          <button class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:brightness-110 py-3 rounded-2xl transition font-semibold">Coba Gratis</button>
+        </div>
+
+        <div class="glass border border-white/20 rounded-3xl p-8 hover:border-white/40 transition">
+          <h3 class="text-2xl font-bold mb-2">Unlimited</h3>
+          <p class="text-gray-400 mb-6">Dengan kode ceanz</p>
+          <div class="text-4xl font-bold mb-6">FREE<span class="text-lg text-gray-400">Forever</span></div>
+          <ul class="space-y-3 mb-8 text-sm">
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> Unlimited Analisis</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 8K Export</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> Watermark-Free</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> Priority 24/7</li>
+          </ul>
+          <button class="w-full bg-emerald-600 hover:bg-emerald-700 py-3 rounded-2xl transition font-semibold">Gunakan Kode</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-16 border-t border-white/10 text-center">
+    <p class="text-2xl font-bold mb-2">HanClip Pro</p>
+    <p class="text-gray-500">Unlimited Access • Watermark-Free • Powered by ceanz code</p>
+    <div class="flex justify-center gap-8 mt-8 text-sm">
+      <a href="#" class="text-gray-400 hover:text-white transition">Privacy</a>
+      <a href="#" class="text-gray-400 hover:text-white transition">Terms</a>
+      <a href="#" class="text-gray-400 hover:text-white transition">Contact</a>
+      <a href="#" class="text-gray-400 hover:text-white transition">Discord</a>
+    </div>
+    <p class="mt-8 text-xs text-gray-600">Made for creators who want to go viral faster than Opus Clip</p>
+  </footer>
+
+  <script>
+    function startAnalysis() {
+      const url = document.getElementById('videoUrl').value.trim();
+      if (!url) return alert("Masukkan link video terlebih dahulu!");
+
+      const section = document.getElementById('analysisSection');
+      section.classList.remove('hidden');
+      
+      setTimeout(() => {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+
+      // Progress simulation
+      let progress = 0;
+      const bar = document.getElementById('progressBar');
+      const interval = setInterval(() => {
+        progress += Math.random() * 12;
+        if (progress > 100) progress = 100;
+        bar.style.width = progress + '%';
+        if (progress >= 100) clearInterval(interval);
+      }, 120);
+
+      // Simulate AI analysis
+      setTimeout(() => {
+        document.getElementById('resultContent').innerHTML = `
+          <div class="lg:col-span-4 space-y-6">
+            <div class="glass rounded-3xl p-8 border border-purple-500/30">
+              <h3 class="text-xl font-semibold mb-6 flex items-center gap-3">
+                <i class="fas fa-video text-purple-400"></i> Video Metadata
+              </h3>
+              <div class="space-y-4 text-sm">
+                <p><strong>Title:</strong> "Moment yang Bikin Orang Berhenti Scroll"</p>
+                <p><strong>Channel:</strong> CreatorViralID</p>
+                <p><strong>Views:</strong> 8.4M • <strong>Duration:</strong> 18:22</p>
+                <p class="pt-4 text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-pink-400">93.7% <span class="text-xl font-normal text-white">Viral Potential</span></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-8">
+            <h3 class="text-2xl font-bold mb-6">🔥 5 Segment Viral Terbaik</h3>
+            <div class="space-y-6">
+              <div class="glass rounded-3xl p-7 hover:border-purple-500 border border-transparent transition-all group">
+                <div class="flex justify-between items-start gap-4">
+                  <div class="flex-1">
+                    <div class="font-mono text-purple-400 text-sm mb-2">00:08 — 00:47</div>
+                    <div class="text-2xl font-semibold group-hover:text-purple-400 transition">Hook Emosional + Visual Shock</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-emerald-400 font-bold text-3xl">97%</div>
+                    <div class="text-xs text-gray-400">TikTok / Reels</div>
+                  </div>
+                </div>
+                <p class="text-gray-400 mt-3">Opening yang langsung menarik perhatian + ekspresi wajah kuat. Retention diprediksi 85%+.</p>
+                <div class="mt-4 text-xs flex gap-4 flex-wrap">
+                  <span class="bg-white/10 px-4 py-1 rounded-full">CapCut Auto Zoom</span>
+                  <span class="bg-white/10 px-4 py-1 rounded-full">Add Trending Sound</span>
+                </div>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass rounded-3xl p-7 hover:border-pink-500 border border-transparent transition-all">
+                  <div class="font-mono text-pink-400 text-sm mb-2">03:15 — 03:52</div>
+                  <div class="font-semibold mb-2">Twist Lucu + Text Overlay</div>
+                  <div class="text-emerald-400 font-bold text-3xl mt-2">91%</div>
+                  <div class="text-xs text-gray-400">Shorts • 37 detik</div>
+                </div>
+                <div class="glass rounded-3xl p-7 hover:border-yellow-500 border border-transparent transition-all">
+                  <div class="font-mono text-yellow-400 text-sm mb-2">11:40 — 12:18</div>
+                  <div class="font-semibold mb-2">Call To Action + Ending Kuat</div>
+                  <div class="text-emerald-400 font-bold text-3xl mt-2">94%</div>
+                  <div class="text-xs text-gray-400">Reels • 38 detik</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }, 2200);
+    }
+
+    function resetAnalysis() {
+      document.getElementById('videoUrl').value = '';
+      document.getElementById('analysisSection').classList.add('hidden');
+      document.getElementById('progressBar').style.width = '0%';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
